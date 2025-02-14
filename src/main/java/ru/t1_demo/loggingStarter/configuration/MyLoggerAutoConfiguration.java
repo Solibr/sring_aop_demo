@@ -1,5 +1,6 @@
 package ru.t1_demo.loggingStarter.configuration;
 
+import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,15 +17,10 @@ public class MyLoggerAutoConfiguration {
     private MyLoggerProperties properties;
 
     @Bean
-    public MyLogger myLogger() {
-        String text = properties.getLevel();
-        return new MyLogger(text);
-    }
-
-    @Bean
     @ConditionalOnProperty(name = "my-logger.status", havingValue = "enabled", matchIfMissing = true)
     public MyLoggingAspect myLoggingAspect() {
-        return new MyLoggingAspect();
+        Level level = properties.getLevel();
+        return new MyLoggingAspect(new MyLogger(level));
     }
 
 }
